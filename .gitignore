@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.log
+*.cim
+*.img
+*.bin
+adbkey
+adbkey.pub
+*.bak
