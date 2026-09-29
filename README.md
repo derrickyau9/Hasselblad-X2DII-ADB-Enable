@@ -32,14 +32,13 @@ py -3.11 -X utf8 .\x2dii_adb_enable.py verify --lang en --adb-path "C:\path\to\p
 
 If `adb` is on `PATH`, omit `--adb-path`. If the public key is elsewhere, pass `--adb-pubkey "C:\path\to\adbkey.pub"`. For scripted use, `--lang en --yes` skips the write confirmation; do this only after reviewing the displayed plan. `--host` overrides the default camera IP.
 
-The wizard first checks whether an ADB device already identifies as `ro.product.device=eagle2_hb722`. If so, it exits without writing. Otherwise it validates a read-only diagnostic reply, runs a read-only `id` shell test, stages and checks the public key, appends it to `adb_keys` while preserving existing keys, switches USB mode to include ADB, and waits up to 90 seconds for an ADB device with the correct product identity. A successful send alone is never reported as success.
-<img width="1115" height="392" alt="image" src="https://github.com/user-attachments/assets/cca1b328-b557-4a97-ac9c-ccef57f9b13a" />
+The wizard first checks whether an ADB device already identifies as `ro.product.device=eagle2_hb722`. If so, it exits without writing. Otherwise it validates a read-only diagnostic reply, runs read-only `id` and product identity checks, stages and checks the public key, appends it to `adb_keys` while preserving existing keys, switches USB mode to include ADB, and waits up to 90 seconds for an ADB device with the correct product identity. A successful send alone is never reported as success.
 
 ## What changes
 
 The tool writes the host's public ADB key to `/blackbox/system/adb/misc/adb/adb_keys` and requests `sys.usb.config=rndis,mass_storage,bulk,acm,adb`. It does not flash firmware, edit boot partitions, or modify camera images. USB can temporarily disconnect and re-enumerate. The public key file can remain after a reboot; restarting the camera alone is **not** a complete removal of authorization. Removal and persistence have not been validated by this project, so no automated rollback is provided.
 
-If `check` cannot validate both the diagnostic reply and the read-only shell test, the wizard stops before any write. If ADB does not appear after switching USB, inspect `adb devices`, Windows USB drivers, and the RNDIS network; do not assume that another attached Android device is the camera.
+If `check` cannot validate the diagnostic reply, read-only shell, and product identity, the wizard stops before any write. The tool does not read or verify the firmware version automatically; check version 1.3.16.2 on the camera before using it. If ADB does not appear after switching USB, inspect `adb devices`, Windows USB drivers, and the RNDIS network; do not assume that another attached Android device is the camera.
 
 ## Credit and provenance
 
