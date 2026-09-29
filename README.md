@@ -2,7 +2,7 @@
 
 [简体中文](README.zh-CN.md) · English
 
-An interactive, command-line wizard for enabling USB ADB on a **Hasselblad X2D II 100C running firmware 1.3.16.2**. The cmd 65 route and final ADB identity check were tested on one physical camera. Other models and firmware versions are **not verified**.
+An interactive, bilingual command-line wizard for enabling USB ADB on a **Hasselblad X2D II 100C running firmware 1.3.16.2**. The cmd 65 route and final ADB identity check were tested on one physical camera. This packaged wizard's revised key-appending sequence has passed offline tests but has **not** been rerun on a fresh camera. Other models and firmware versions are **not verified**.
 
 > **Risk and responsibility:** This operation may void your warranty and may cause camera malfunction or damage. You choose to run it and accept all consequences. The authors and contributors provide the software as-is and are not responsible for any loss or damage. Back up your photos, keep the battery charged, and use it only on a camera you own or are authorized to service.
 
