@@ -33,6 +33,7 @@ py -3.11 -X utf8 .\x2dii_adb_enable.py verify --lang en --adb-path "C:\path\to\p
 If `adb` is on `PATH`, omit `--adb-path`. If the public key is elsewhere, pass `--adb-pubkey "C:\path\to\adbkey.pub"`. For scripted use, `--lang en --yes` skips the write confirmation; do this only after reviewing the displayed plan. `--host` overrides the default camera IP.
 
 The wizard first checks whether an ADB device already identifies as `ro.product.device=eagle2_hb722`. If so, it exits without writing. Otherwise it validates a read-only diagnostic reply, runs read-only `id` and product identity checks, stages and checks the public key, appends it to `adb_keys` while preserving existing keys, switches USB mode to include ADB, and waits up to 90 seconds for an ADB device with the correct product identity. A successful send alone is never reported as success.
+<img width="1091" height="694" alt="image" src="https://github.com/user-attachments/assets/6413c721-47da-446f-a54f-c91d27c679b5" />
 
 ## What changes
 
