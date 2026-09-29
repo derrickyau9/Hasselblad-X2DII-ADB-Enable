@@ -8,7 +8,8 @@ from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 import x2dii_adb_enable as cli
-from x2dii_protocol import CMD_PRODCONFIG, crc16_xmodem, parse_replies, probe_frame
+from x2dii_protocol import (CMD_HBLSHELL, CMD_PRODCONFIG, COOKIE, Reply,
+                            crc16_xmodem, parse_replies, probe_frame)
 
 
 class ProtocolTests(unittest.TestCase):
@@ -63,6 +64,16 @@ class SafetyTests(unittest.TestCase):
 
         with patch.object(cli.subprocess, "run", side_effect=fake_run):
             self.assertEqual(cli.adb_camera("adb"), "CAMERA")
+
+    def test_wrong_diagnostic_product_blocks_write(self):
+        responses = [
+            [Reply(CMD_PRODCONFIG, 2, COOKIE, 13, 0, "")],
+            [Reply(CMD_HBLSHELL, 1, COOKIE, 0, 0, "uid=0(root)")],
+            [Reply(CMD_HBLSHELL, 1, COOKIE, 0, 0, "other_product")],
+        ]
+        with patch.object(cli.socket, "create_connection"), \
+             patch.object(cli, "exchange", side_effect=responses):
+            self.assertFalse(cli.read_only_check("192.168.42.2", "en"))
 
 
 if __name__ == "__main__":
