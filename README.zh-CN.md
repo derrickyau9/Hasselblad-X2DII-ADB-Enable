@@ -32,13 +32,13 @@ py -3.11 -X utf8 .\x2dii_adb_enable.py verify --lang zh --adb-path "C:\path\to\p
 
 如果 `adb` 已加入 `PATH`，可省略 `--adb-path`。公钥不在默认位置时，用 `--adb-pubkey "C:\path\to\adbkey.pub"` 指定。自动化运行可显式传入 `--lang zh --yes` 跳过写入确认，请先审阅屏幕上的操作计划。`--host` 可覆盖相机 IP。
 
-向导会先检查 ADB 中是否已有 `ro.product.device=eagle2_hb722` 的相机，若有则直接退出，不重复写入。否则依次验证只读诊断应答、执行只读 `id` 测试、暂存并校验公钥长度、将公钥追加到相机 `adb_keys`（保留现有密钥）、切换 USB 配置，再等待最多 90 秒确认正确型号的 ADB 设备。**仅仅发送命令不算成功。**
+向导会先检查 ADB 中是否已有 `ro.product.device=eagle2_hb722` 的相机，若有则直接退出，不重复写入。否则依次验证只读诊断应答、执行只读 `id` 和型号检查、暂存并校验公钥长度、将公钥追加到相机 `adb_keys`（保留现有密钥）、切换 USB 配置，再等待最多 90 秒确认正确型号的 ADB 设备。**仅仅发送命令不算成功。**
 
 ## 实际改动
 
 工具把本机 ADB 公钥写入 `/blackbox/system/adb/misc/adb/adb_keys`，并请求 `sys.usb.config=rndis,mass_storage,bulk,acm,adb`。工具不会刷入固件、改启动分区或修改照片。USB 可能短暂断开并重新枚举。公钥文件可能在重启后继续保留，所以**重启相机不等于彻底撤销授权**。本项目尚未验证完整移除与持久化行为，因此没有提供自动回滚命令。
 
-如果 `check` 不能确认诊断应答和只读 shell，向导会在写入前停止。如果切换 USB 后 ADB 没有出现，请检查 `adb devices`、Windows USB 驱动和 RNDIS 网络；不要把其他 Android 设备误认为相机。
+如果 `check` 不能确认诊断应答、只读 shell 和相机型号，向导会在写入前停止。工具不会自动读取并核对固件版本；使用前请在相机上确认是 1.3.16.2。如果切换 USB 后 ADB 没有出现，请检查 `adb devices`、Windows USB 驱动和 RNDIS 网络；不要把其他 Android 设备误认为相机。
 
 ## 致谢与来源
 
