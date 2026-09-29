@@ -39,6 +39,8 @@ MESSAGES = {
         "probe_ok": "只读诊断应答有效。",
         "shell_fail": "未确认 cmd 65 shell 可用；此固件/状态不适用已验证流程，已停止。",
         "shell_ok": "cmd 65 shell 已通过只读 id 检查。",
+        "model_fail": "只读型号检查不是 eagle2_hb722，已停止；不会写入。",
+        "model_ok": "只读型号检查通过：eagle2_hb722。",
         "plan": "将本机 ADB 公钥追加到相机 adb_keys（保留原有密钥），再临时切换 USB 配置以启动 ADB。",
         "no_firmware": "此流程不刷固件、不修改启动分区；USB 重连期间连接可能短暂中断。",
         "confirm": "输入 ENABLE 才继续写入（其他输入取消）：",
@@ -70,6 +72,8 @@ MESSAGES = {
         "probe_ok": "Read-only diagnostic reply is valid.",
         "shell_fail": "Could not confirm cmd 65 shell access. This firmware/state is outside the tested path. Stopped.",
         "shell_ok": "cmd 65 shell passed the read-only id check.",
+        "model_fail": "Read-only product check did not return eagle2_hb722. Stopped before writing.",
+        "model_ok": "Read-only product check passed: eagle2_hb722.",
         "plan": "The wizard will append this host's ADB public key to camera adb_keys (preserving existing keys), then temporarily switch USB mode to start ADB.",
         "no_firmware": "This workflow does not flash firmware or edit boot partitions. USB may disconnect briefly.",
         "confirm": "Type ENABLE to write (anything else cancels):",
@@ -187,6 +191,11 @@ def read_only_check(host: str, lang: str) -> bool:
         say(lang, "shell_fail")
         return False
     say(lang, "shell_ok")
+    replies = exchange(host, shell_frame("getprop ro.product.device"), CMD_HBLSHELL)
+    if not any(re.search(r"\b" + re.escape(PRODUCT) + r"\b", r.text) for r in replies):
+        say(lang, "model_fail")
+        return False
+    say(lang, "model_ok")
     return True
 
 
